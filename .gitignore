@@ -42,6 +42,9 @@ yarn-error.log
 # VSCode history plugin
 .vscode/.history/
 
+# Vite.js
+.vite/
+
 # Cloud9
 .c9
 .nzm-*
