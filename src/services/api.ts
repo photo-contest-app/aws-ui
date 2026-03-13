@@ -14,9 +14,35 @@ api.interceptors.request.use((config) => {
   const token = localStorage.getItem('idToken');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log('Adding auth token to request:', config.url, 'Token present:', !!token);
+  } else {
+    console.warn('No auth token found in localStorage for request:', config.url);
   }
   return config;
 });
+
+// Handle authentication errors globally
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Log the error for debugging
+    if (error.response) {
+      console.error('API Error:', {
+        status: error.response.status,
+        data: error.response.data,
+        url: error.config?.url
+      });
+    }
+
+    // If we get a 401, the token might be expired or invalid
+    if (error.response?.status === 401) {
+      console.warn('Authentication error - token may be expired');
+      // Don't auto-redirect here, let the component handle it
+    }
+
+    return Promise.reject(error);
+  }
+);
 
 export interface User {
   email: string;

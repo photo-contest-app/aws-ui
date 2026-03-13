@@ -11,7 +11,9 @@ export const Vote: React.FC = () => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
   const [hasVotedThisMonth, setHasVotedThisMonth] = useState(false);
+  const [currentVotedPhotoId, setCurrentVotedPhotoId] = useState<string | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const { userId } = useAuth();
 
   useEffect(() => {
@@ -27,8 +29,9 @@ export const Vote: React.FC = () => {
       setPhotos(data);
 
       // Check if user has already voted for any photo this month
-      const hasVoted = data.some(photo => photo.voted);
-      setHasVotedThisMonth(hasVoted);
+      const votedPhoto = data.find(photo => photo.voted);
+      setHasVotedThisMonth(!!votedPhoto);
+      setCurrentVotedPhotoId(votedPhoto?.photo_id || null);
 
       setError('');
     } catch (err: any) {
@@ -39,15 +42,63 @@ export const Vote: React.FC = () => {
   };
 
   const handlePhotoClick = (photo: Photo) => {
+    // If user has voted for a different photo, show cancel confirmation first
+    if (hasVotedThisMonth && currentVotedPhotoId && currentVotedPhotoId !== photo.photo_id) {
+      setSelectedPhoto(photo);
+      setShowCancelConfirm(true);
+      return;
+    }
     setSelectedPhoto(photo);
   };
 
   const closeModal = () => {
     setSelectedPhoto(null);
+    setShowCancelConfirm(false);
+  };
+
+  const handleCancelAndVote = async () => {
+    if (!userId || !selectedPhoto) return;
+
+    try {
+      setVoting(true);
+      setShowCancelConfirm(false);
+
+      // Vote for the new photo - backend will automatically remove old vote
+      await photoAPI.vote(userId, selectedPhoto.photo_id);
+
+      // Update the local state
+      const updatedPhotos = photos.map(p => ({
+        ...p,
+        voted: p.photo_id === selectedPhoto.photo_id
+      }));
+      setPhotos(updatedPhotos);
+      setCurrentVotedPhotoId(selectedPhoto.photo_id);
+      setSelectedPhoto({ ...selectedPhoto, voted: true });
+
+      setMessage('Äänesi on vaihdettu onnistuneesti!');
+
+    } catch (err: any) {
+      console.error('Vote change error:', err);
+
+      // Check for authentication errors
+      if (err.response?.status === 401 || err.response?.data?.message === 'Unauthorized') {
+        setError('Istuntosi on vanhentunut. Ole hyvä ja kirjaudu uudelleen sisään.');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 3000);
+        return;
+      }
+
+      const errorMsg = err.response?.data?.error || err.response?.data?.message || 'Äänen vaihtaminen epäonnistui';
+      setError(errorMsg);
+      setTimeout(() => setError(''), 5000);
+    } finally {
+      setVoting(false);
+    }
   };
 
   const handleVote = async () => {
-    if (!userId || !selectedPhoto || hasVotedThisMonth) return;
+    if (!userId || !selectedPhoto) return;
 
     try {
       setVoting(true);
@@ -55,6 +106,7 @@ export const Vote: React.FC = () => {
 
       // Mark that user has voted this month
       setHasVotedThisMonth(true);
+      setCurrentVotedPhotoId(selectedPhoto.photo_id);
 
       // Update the voted status for the selected photo
       const updatedPhotos = photos.map(p =>
@@ -63,13 +115,24 @@ export const Vote: React.FC = () => {
       setPhotos(updatedPhotos);
       setSelectedPhoto({ ...selectedPhoto, voted: true });
 
-      setMessage('Ääni rekisteröity! Voit selata muita kuvia, mutta voit äänestää vain yhtä kuvaa kuukaudessa.');
+      setMessage('Ääni rekisteröity! Voit vaihtaa ääntäsi toiseen kuvaan milloin tahansa.');
       setTimeout(() => {
         setMessage('');
         closeModal();
       }, 2000);
     } catch (err: any) {
-      const errorMsg = err.response?.data?.error || 'Äänestys epäonnistui';
+      console.error('Vote error:', err);
+
+      // Check for authentication errors
+      if (err.response?.status === 401 || err.response?.data?.message === 'Unauthorized') {
+        setError('Istuntosi on vanhentunut. Ole hyvä ja kirjaudu uudelleen sisään.');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 3000);
+        return;
+      }
+
+      const errorMsg = err.response?.data?.error || err.response?.data?.message || 'Äänestys epäonnistui';
 
       // Translate common error messages to Finnish
       let translatedError = errorMsg;
@@ -138,8 +201,8 @@ export const Vote: React.FC = () => {
 
           <div className="empty-state-info">
             <p>
-              <strong>Tiedätkö?</strong> Voit äänestää vain yhtä kuvaa kuukaudessa. Valitse siis tarkkaan!
-              Kuukauden paras valokuva julkaistaan <a href="/tulokset">Tulokset</a>-sivulla.
+              <strong>Tiedätkö?</strong> Voit äänestää yhtä kuvaa kerrallaan, mutta voit vaihtaa ääntäsi
+              toiseen kuvaan milloin tahansa kuukauden aikana. Kuukauden paras valokuva julkaistaan <a href="/tulokset">Tulokset</a>-sivulla.
             </p>
           </div>
         </div>
@@ -159,7 +222,7 @@ export const Vote: React.FC = () => {
 
       {hasVotedThisMonth && (
         <div className="vote-status-banner-gallery">
-          <p>✅ Olet jo äänestänyt tässä kuussa. Voit selata kuvia, mutta et voi äänestää uudelleen.</p>
+          <p>✅ Olet äänestänyt tässä kuussa. Voit vaihtaa ääntäsi toiseen kuvaan klikkaamalla sitä.</p>
         </div>
       )}
 
@@ -215,21 +278,50 @@ export const Vote: React.FC = () => {
                   </div>
                 )}
 
-                <div className="modal-actions">
-                  <button
-                    onClick={closeModal}
-                    className="btn-secondary-modal"
-                  >
-                    Sulje
-                  </button>
-                  <button
-                    onClick={handleVote}
-                    disabled={voting || hasVotedThisMonth || selectedPhoto.voted}
-                    className="btn-primary-modal"
-                  >
-                    {voting ? 'Äänestää...' : hasVotedThisMonth ? 'Olet jo äänestänyt' : 'Äänestä tätä kuvaa'}
-                  </button>
-                </div>
+                {showCancelConfirm && (
+                  <div className="cancel-confirm-box">
+                    <p className="confirm-message">
+                      <strong>Haluatko vaihtaa ääntäsi?</strong>
+                    </p>
+                    <p className="confirm-description">
+                      Nykyinen äänesi perutaan ja äänestät tätä kuvaa sen sijaan.
+                    </p>
+                    <div className="confirm-actions">
+                      <button
+                        onClick={closeModal}
+                        className="btn-secondary-modal"
+                        disabled={voting}
+                      >
+                        Peruuta
+                      </button>
+                      <button
+                        onClick={handleCancelAndVote}
+                        className="btn-primary-modal"
+                        disabled={voting}
+                      >
+                        {voting ? 'Vaihdetaan...' : 'Kyllä, vaihda ääni'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {!showCancelConfirm && (
+                  <div className="modal-actions">
+                    <button
+                      onClick={closeModal}
+                      className="btn-secondary-modal"
+                    >
+                      Sulje
+                    </button>
+                    <button
+                      onClick={handleVote}
+                      disabled={voting || selectedPhoto.voted}
+                      className="btn-primary-modal"
+                    >
+                      {voting ? 'Äänestää...' : selectedPhoto.voted ? 'Olet jo äänestänyt tätä' : 'Äänestä tätä kuvaa'}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
