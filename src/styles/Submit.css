@@ -1,0 +1,115 @@
+.submit-container {
+  max-width: 800px;
+  width: 100%;
+  padding: 3rem 2rem;
+}
+
+.submit-container h1 {
+  color: var(--text-primary);
+  margin-top: 2rem;
+  margin-bottom: 4rem;
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.submit-info {
+  text-align: left;
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  line-height: 1.7;
+  font-size: 1rem;
+}
+
+.submit-container .error-message,
+.submit-container .success-message {
+  margin-bottom: 1.5rem;
+  border-radius: 4px;
+}
+
+.submit-form {
+  background: var(--card-background);
+  padding: 2.5rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+}
+
+.submit-form textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.image-upload-section {
+  margin-bottom: 2rem;
+}
+
+.image-upload-label {
+  display: block;
+  padding: 3rem;
+  border: 2px dashed var(--border-color);
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--background-secondary);
+}
+
+.image-upload-label:hover {
+  border-color: var(--primary-color);
+  background: white;
+}
+
+.image-upload-label input {
+  display: none;
+}
+
+.upload-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--text-muted);
+}
+
+.upload-text {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.upload-hint {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.image-preview {
+  margin: 1.5rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  max-height: 500px;
+}
+
+.image-preview img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+}
+
+.submit-form button[type="submit"] {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .submit-container {
+    padding: 1rem;
+  }
+
+  .submit-form {
+    padding: 1.5rem;
+  }
+}
+
