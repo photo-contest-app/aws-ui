@@ -225,7 +225,7 @@ export const Vote: React.FC = () => {
 
       {hasVotedThisMonth && (
         <div className="vote-status-banner-gallery">
-          <p>✅ Olet äänestänyt tässä kuussa. Voit vaihtaa ääntäsi toiseen kuvaan klikkaamalla sitä.</p>
+          <p>✅ Olet jo äänestänyt tässä kuussa. Voit vaihtaa ääntäsi toiseen kuvaan klikkaamalla sitä.</p>
         </div>
       )}
 
@@ -322,7 +322,7 @@ export const Vote: React.FC = () => {
                       disabled={voting || selectedPhoto.voted}
                       className="btn-primary-modal"
                     >
-                      {voting ? 'Äänestää...' : selectedPhoto.voted ? 'Olet jo äänestänyt tätä' : 'Äänestä tätä kuvaa'}
+                      {voting ? 'Lähetetään...' : selectedPhoto.voted ? 'Olet jo äänestänyt tätä' : 'Äänestä tätä kuvaa'}
                     </button>
                   </div>
                 )}

@@ -170,7 +170,7 @@ export const Legal: React.FC = () => {
           <h3>6. Voittajien valinta</h3>
           <p>
             Kuukauden voittaja valitaan automaattisesti eniten ääniä saaneen kuvan perusteella.
-            Voittaja lasketaan ja julkaistaan jokaisen kuukauden päätyttyä. Tasatilanteessa
+            Voittaja lasketaan ja julkaistaan kuukauden vaihteessa (1. päivä klo 00:00 UTC). Tasatilanteessa
             aikaisemmin ladattu kuva voittaa.
           </p>
 

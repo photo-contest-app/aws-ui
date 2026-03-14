@@ -44,7 +44,7 @@ export const Results: React.FC = () => {
           <>
             <h2>{error}</h2>
             <p>
-              Eniten ääniä saanut valokuva julkaistaan jokaisen kuukauden 8. päivänä keskiyöllä UTC-ajassa.
+              Eniten ääniä saanut valokuva julkaistaan kuukauden vaihteessa keskiyöllä UTC-ajassa.
             </p>
           </>
       )}
@@ -89,9 +89,9 @@ export const Results: React.FC = () => {
         <h3>Näin se toimii</h3>
         <ul>
           <li>Lähetä yksi kuva kuukaudessa osallistuaksesi kilpailuun.</li>
-          <li>Äänestä muiden osallistujien kuvia koko kuukauden ajan.</li>
-          <li>Voittaja valitaan automaattisesti jokaisen kuukauden 8. päivänä.</li>
-          <li>Eniten ääniä saanut kuva voittaa kuukauden kilpailun.</li>
+          <li>Valitse osallistujien kuvista mieleisesi ja äänestä sitä.</li>
+          <li>Voit äänestää vain yhtä kuvaa, mutta voit vaihtaa äänesi koko kuukauden ajan.</li>
+          <li>Voittaja julkaistaan automaattisesti joka kuukauden vaihteessa.</li>
           <li>Tasatilanteessa aikaisemmin lähetetty kuva voittaa.</li>
         </ul>
       </div>

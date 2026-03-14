@@ -86,13 +86,13 @@ export const Home: React.FC = () => {
           </div>
           <div className="feature-card">
             <div className="feature-icon">👍</div>
-            <h3>Äänestä kuvia</h3>
-            <p>Selaa ja äänestä muiden valokuvaajien kuvia. Äänesi auttaa määrittämään kuukauden voittajan.</p>
+            <h3>Äänestä kuvaa</h3>
+            <p>Selaa ja äänestä mielestäsi parasta valokuvaa muilta kilpailijoilta. Äänesi auttaa määrittämään kuukauden voittajan.</p>
           </div>
           <div className="feature-card">
             <div className="feature-icon">🏆</div>
             <h3>Voita kisa</h3>
-            <p>Voittaja valitaan automaattisesti jokaisen kuukauden 8. päivänä eniten ääniä saaneella valokuvalla.</p>
+            <p>Voittaja valitaan automaattisesti kuukauden vaihteessa eniten ääniä saaneella valokuvalla.</p>
           </div>
         </div>
       </section>
@@ -145,20 +145,6 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="home-footer">
-        <div className="footer-content">
-          <p className="footer-text">
-            <Link to="/tietosuoja" className="footer-link">Tietosuoja ja käyttöehdot</Link>
-            {' · '}
-            <span>Kaikki tiedot säilytetään turvallisesti AWS EU:ssa (Tukholma)</span>
-          </p>
-          <p className="footer-copyright">
-            © 2026 Kuukauden Kuva. GDPR-yhteensopiva palvelu.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 };
