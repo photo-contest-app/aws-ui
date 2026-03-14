@@ -59,7 +59,10 @@ export const Login: React.FC = () => {
           </button>
         </form>
         <p className="auth-link">
-          Uusi Kuukauden Kuvassa? <Link to="/register">Luo tili</Link>
+          Uusi Kuukauden Kuvassa? <Link to="/luo-tunnus">Luo tili</Link>
+        </p>
+        <p className="auth-footer-link">
+          <Link to="/tietosuoja">Tietosuoja ja käyttöehdot</Link>
         </p>
       </div>
     </div>

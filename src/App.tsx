@@ -8,6 +8,7 @@ import { Register } from './pages/Register';
 import { Vote } from './pages/Vote';
 import { Submit } from './pages/Submit';
 import { Results } from './pages/Results';
+import { Legal } from './pages/Legal';
 import './styles/App.css';
 
 function AppRoutes() {
@@ -18,6 +19,7 @@ function AppRoutes() {
       <Route path="/kirjaudu" element={<Login />} />
       <Route path="/luo-tunnus" element={<Register />} />
       <Route path="/tulokset" element={<Results />} />
+      <Route path="/tietosuoja" element={<Legal />} />
       <Route
         path="/"
         element={

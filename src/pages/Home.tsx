@@ -145,6 +145,20 @@ export const Home: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="home-footer">
+        <div className="footer-content">
+          <p className="footer-text">
+            <Link to="/tietosuoja" className="footer-link">Tietosuoja ja käyttöehdot</Link>
+            {' · '}
+            <span>Kaikki tiedot säilytetään turvallisesti AWS EU:ssa (Tukholma)</span>
+          </p>
+          <p className="footer-copyright">
+            © 2026 Kuukauden Kuva. GDPR-yhteensopiva palvelu.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 };

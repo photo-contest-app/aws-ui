@@ -44,12 +44,14 @@ export const Navigation: React.FC = () => {
               <button onClick={handleLogout} className="nav-link btn-logout">
                 Kirjaudu ulos
               </button>
+              <Link to="/tietosuoja" className="nav-link" onClick={closeMenu}>Tietosuoja</Link>
             </>
           ) : (
             <>
               <Link to="/tulokset" className="nav-link" onClick={closeMenu}>Tulokset</Link>
               <Link to="/kirjaudu" className="nav-link" onClick={closeMenu}>Kirjaudu</Link>
               <Link to="/luo-tunnus" className="nav-link btn-register" onClick={closeMenu}>Luo tili</Link>
+              <Link to="/tietosuoja" className="nav-link" onClick={closeMenu}>Tietosuoja</Link>
             </>
           )}
         </div>

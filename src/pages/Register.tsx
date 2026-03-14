@@ -10,6 +10,7 @@ export const Register: React.FC = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [verificationCode, setVerificationCode] = useState('');
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
@@ -21,6 +22,12 @@ export const Register: React.FC = () => {
     e.preventDefault();
     setError('');
     setSuccess('');
+
+    if (!acceptTerms) {
+      setError('Sinun on hyväksyttävä käyttöehdot ja tietosuojaseloste jatkaaksesi.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -141,7 +148,20 @@ export const Register: React.FC = () => {
             />
             <small>Vähintään 8 merkkiä isoine ja pieniä kirjaimia sekä numeroita</small>
           </div>
-          <button type="submit" disabled={loading} className="btn-primary">
+          <div className="form-group checkbox-group">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                checked={acceptTerms}
+                onChange={(e) => setAcceptTerms(e.target.checked)}
+                required
+              />
+              <span>
+                Hyväksyn <Link to="/tietosuoja" target="_blank" rel="noopener noreferrer">käyttöehdot ja tietosuojaselosteen</Link>
+              </span>
+            </label>
+          </div>
+          <button type="submit" disabled={loading || !acceptTerms} className="btn-primary">
             {loading ? 'Luodaan tiliä...' : 'Luo tili'}
           </button>
         </form>

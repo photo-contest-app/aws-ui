@@ -61,6 +61,7 @@ export const Vote: React.FC = () => {
 
     try {
       setVoting(true);
+      setShowCancelConfirm(false);
 
       // Vote for the new photo - backend will automatically remove old vote
       await photoAPI.vote(userId, selectedPhoto.photo_id);
@@ -73,7 +74,12 @@ export const Vote: React.FC = () => {
       setPhotos(updatedPhotos);
       setCurrentVotedPhotoId(selectedPhoto.photo_id);
       setSelectedPhoto({ ...selectedPhoto, voted: true });
-      setShowCancelConfirm(false);
+
+      setMessage('Äänesi on vaihdettu onnistuneesti!');
+      setTimeout(() => {
+        setMessage('');
+        closeModal();
+      }, 2000);
     } catch (err: any) {
       console.error('Vote change error:', err);
 
@@ -311,15 +317,13 @@ export const Vote: React.FC = () => {
                     >
                       Sulje
                     </button>
-                    {!hasVotedThisMonth && (
-                        <button
-                            onClick={handleVote}
-                            disabled={voting || selectedPhoto.voted}
-                            className="btn-primary-modal"
-                        >
-                          {voting ? 'Lähetetään...' : 'Äänestä tätä kuvaa'}
-                        </button>
-                    )}
+                    <button
+                      onClick={handleVote}
+                      disabled={voting || selectedPhoto.voted}
+                      className="btn-primary-modal"
+                    >
+                      {voting ? 'Äänestää...' : selectedPhoto.voted ? 'Olet jo äänestänyt tätä' : 'Äänestä tätä kuvaa'}
+                    </button>
                   </div>
                 )}
               </div>
