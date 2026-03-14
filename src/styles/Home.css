@@ -380,7 +380,6 @@
 
   .home-photo-gallery {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    grid-auto-rows: 8px;
   }
 
   /* Adjust masonry heights for tablet */
