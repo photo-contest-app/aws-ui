@@ -150,6 +150,36 @@ export const photoAPI = {
     return response.data;
   },
 
+  submitPhotoWithPresignedUrl: async (userId: string, title: string, description: string, imageFile: File): Promise<{ photo_id: string; message: string }> => {
+    // Step 1: Get presigned upload URL
+    const urlResponse = await api.post('/get-upload-url', {
+      user_id: userId,
+      title,
+      description,
+      content_type: imageFile.type
+    });
+
+    const { upload_url, photo_id } = urlResponse.data;
+
+    // Step 2: Upload image directly to S3 using presigned URL
+    // Important: Don't set Content-Type header - it's already in the presigned URL
+    const s3Response = await fetch(upload_url, {
+      method: 'PUT',
+      body: imageFile
+    });
+
+    if (!s3Response.ok) {
+      const errorText = await s3Response.text();
+      throw new Error(`S3 upload failed: ${s3Response.status} ${s3Response.statusText} - ${errorText}`);
+    }
+
+    // Step 3: Wait a moment for processing, then return success
+    return {
+      photo_id,
+      message: 'Photo uploaded successfully and is being processed'
+    };
+  },
+
   vote: async (userId: string, photoId: string): Promise<{ message: string }> => {
     const response = await api.post('/vote', { user_id: userId, photo_id: photoId });
     return response.data;

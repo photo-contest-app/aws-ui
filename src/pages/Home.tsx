@@ -122,7 +122,7 @@ export const Home: React.FC = () => {
           <div className="rule-item">
             <span className="rule-icon">✓</span>
             <div className="rule-text">
-              <strong>Kuvaformaatit:</strong> JPEG, PNG ja WebP hyväksytään. Maksimi tiedostokoko 10MB.
+              <strong>Kuvaformaatit:</strong> JPEG, PNG ja WebP hyväksytään. Maksimi tiedostokoko 30MB.
             </div>
           </div>
         </div>

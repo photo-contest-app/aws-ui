@@ -23,9 +23,9 @@ export const Submit: React.FC = () => {
       return;
     }
 
-    // Validate file size (max 10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      setError('Kuvan tulee olla alle 10MB');
+    // Validate file size (max 30MB for presigned URL uploads)
+    if (file.size > 30 * 1024 * 1024) {
+      setError('Kuvan tulee olla alle 30MB');
       return;
     }
 
@@ -53,30 +53,54 @@ export const Submit: React.FC = () => {
     setSuccess('');
 
     try {
-      // Convert image to base64
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        try {
-          const imageData = reader.result as string;
-          await photoAPI.submitPhoto(userId, title, description, imageData);
-          setSuccess('Kuva lähetetty onnistuneesti! Voit lähettää vain yhden kuvan kuukaudessa.');
-          setTitle('');
-          setDescription('');
-          setImageFile(null);
-          setImagePreview('');
+      // Use presigned URL for files larger than 5MB to avoid API Gateway limits
+      if (imageFile.size > 5 * 1024 * 1024) {
+        // Large file - use presigned URL upload
+        console.log('Using presigned URL upload for large file:', imageFile.size, 'bytes');
+        await photoAPI.submitPhotoWithPresignedUrl(userId, title, description, imageFile);
+        setSuccess('Kuva lähetetty onnistuneesti ja käsitellään! Voit lähettää vain yhden kuvan kuukaudessa.');
+      } else {
+        // Small file - use traditional base64 upload
+        console.log('Using base64 upload for small file:', imageFile.size, 'bytes');
+        const reader = new FileReader();
+        reader.onloadend = async () => {
+          try {
+            const imageData = reader.result as string;
+            await photoAPI.submitPhoto(userId, title, description, imageData);
+            setSuccess('Kuva lähetetty onnistuneesti! Voit lähettää vain yhden kuvan kuukaudessa.');
+          } catch (err: any) {
+            console.error('Kuvan lähetys epäonnistui:', err);
+            setError(err.response?.data?.error || 'Kuvan lähetys epäonnistui');
+          } finally {
+            setLoading(false);
+          }
+        };
+        reader.readAsDataURL(imageFile);
+        return; // Exit early since FileReader is async
+      }
 
-          // Reset file input
-          const fileInput = document.getElementById('photo-file') as HTMLInputElement;
-          if (fileInput) fileInput.value = '';
-        } catch (err: any) {
-          setError(err.response?.data?.error || 'Kuvan lähetys epäonnistui');
-        } finally {
-          setLoading(false);
-        }
-      };
-      reader.readAsDataURL(imageFile);
+      // Clear form
+      setTitle('');
+      setDescription('');
+      setImageFile(null);
+      setImagePreview('');
+
+      // Reset file input
+      const fileInput = document.getElementById('photo-file') as HTMLInputElement;
+      if (fileInput) fileInput.value = '';
     } catch (err: any) {
-      setError('Kuvatiedoston lukeminen epäonnistui');
+      console.error('Upload error:', err);
+
+      // Enhanced error message
+      let errorMessage = 'Kuvan lähetys epäonnistui';
+      if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+
+      setError(errorMessage);
+    } finally {
       setLoading(false);
     }
   };
@@ -134,7 +158,7 @@ export const Submit: React.FC = () => {
               <>
                 <div className="upload-icon">📸</div>
                 <div className="upload-text">Klikkaa ladataksesi tai vedä ja pudota</div>
-                <div className="upload-hint">Max 10MB • JPEG, PNG, WebP</div>
+                <div className="upload-hint">Max 30MB • JPEG, PNG, WebP</div>
               </>
             ) : (
               <div className="image-preview">
