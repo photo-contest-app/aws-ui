@@ -68,10 +68,13 @@ export interface Winner {
   month_year: string;
   photo_id: string;
   user_id: string;
+  first_name: string;
+  last_name: string;
+  photo_s3_url: string;
   title: string;
   vote_count: number;
   calculated_at: string;
-  s3_key: string;
+  s3_key?: string; // For backward compatibility
   image_url?: string;
 }
 

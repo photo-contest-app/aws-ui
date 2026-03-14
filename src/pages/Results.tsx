@@ -57,13 +57,18 @@ export const Results: React.FC = () => {
 
           <div className="winner-photo">
             <img
-              src={winner.image_url || `https://d1e093ozsec2c7.cloudfront.net/${encodeURIComponent(winner.s3_key)}`}
+              src={winner.image_url || `https://d1e093ozsec2c7.cloudfront.net/${encodeURIComponent(winner.photo_s3_url || winner.s3_key || '')}`}
               alt={winner.title}
             />
           </div>
 
           <div className="winner-details">
             <h3>{winner.title}</h3>
+            {winner.first_name && winner.last_name && (
+              <p className="winner-author">
+                📸 {winner.first_name} {winner.last_name}
+              </p>
+            )}
             <div className="winner-stats">
               <div className="stat">
                 <span className="stat-label">Ääniä yhteensä</span>
