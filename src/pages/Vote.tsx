@@ -14,11 +14,42 @@ export const Vote: React.FC = () => {
   const [currentVotedPhotoId, setCurrentVotedPhotoId] = useState<string | null>(null);
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState<{days: number, hours: number, minutes: number, seconds: number}>({days: 0, hours: 0, minutes: 0, seconds: 0});
   const { userId } = useAuth();
 
   useEffect(() => {
     loadPhotos();
   }, [userId]);
+
+  // Countdown timer effect
+  useEffect(() => {
+    const calculateTimeRemaining = () => {
+      const now = new Date();
+      const endOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0, 0); // First day of next month at midnight
+      const diff = endOfMonth.getTime() - now.getTime();
+
+      if (diff <= 0) {
+        return { days: 0, hours: 0, minutes: 0, seconds: 0 };
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      return { days, hours, minutes, seconds };
+    };
+
+    // Update immediately
+    setTimeRemaining(calculateTimeRemaining());
+
+    // Update every second
+    const interval = setInterval(() => {
+      setTimeRemaining(calculateTimeRemaining());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const loadPhotos = async () => {
     if (!userId) return;
@@ -216,8 +247,38 @@ export const Vote: React.FC = () => {
   return (
     <div className="vote-container">
       <div className="vote-header">
-        <h1>Äänestä kuvia</h1>
-        <p className="photo-counter">Valitse suosikkisi</p>
+        <h1>Äänestä kuvaa</h1>
+
+        {/* Countdown Timer */}
+        <div className="countdown-section">
+          <h3 className="countdown-title">⏰ Aikaa jäljellä äänestämiseen</h3>
+          <div className="countdown-timer">
+            <div className="countdown-unit">
+              <div className="countdown-value">{timeRemaining.days}</div>
+              <div className="countdown-label">päivää</div>
+            </div>
+            <div className="countdown-separator">:</div>
+            <div className="countdown-unit">
+              <div className="countdown-value">{String(timeRemaining.hours).padStart(2, '0')}</div>
+              <div className="countdown-label">tuntia</div>
+            </div>
+            <div className="countdown-separator">:</div>
+            <div className="countdown-unit">
+              <div className="countdown-value">{String(timeRemaining.minutes).padStart(2, '0')}</div>
+              <div className="countdown-label">minuuttia</div>
+            </div>
+            <div className="countdown-separator">:</div>
+            <div className="countdown-unit">
+              <div className="countdown-value">{String(timeRemaining.seconds).padStart(2, '0')}</div>
+              <div className="countdown-label">sekuntia</div>
+            </div>
+          </div>
+          <p className="countdown-info">
+            Äänestys päättyy kuukauden vaihtuessa, jolloin voittaja julkaistaan.
+          </p>
+        </div>
+
+        <p className="photo-counter">Valitse suosikkisi painamalla kuvaa ja äänestämällä.</p>
       </div>
 
       {error && <div className="error-message">{error}</div>}
