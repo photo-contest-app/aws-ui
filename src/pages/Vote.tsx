@@ -200,10 +200,11 @@ export const Vote: React.FC = () => {
             <span className="icon-small">✨</span>
           </div>
 
-          <h2>Ei kuvia saatavilla</h2>
+          <h2>Kuvia ei löytynyt</h2>
 
           <p className="empty-state-description">
-            Tällä hetkellä ei ole kuvia katseltavana. Uusia kuvia lisätään jatkuvasti.
+            Näyttäisi siltä, että tällä hetkellä ei ole saatavilla kuvia äänestettäväksi.
+            Lähettämääsi kuvaa ei näytetä tällä sivulla.
           </p>
 
           <div className="empty-state-tips">

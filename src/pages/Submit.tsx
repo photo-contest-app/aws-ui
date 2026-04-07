@@ -56,12 +56,10 @@ export const Submit: React.FC = () => {
       // Use presigned URL for files larger than 5MB to avoid API Gateway limits
       if (imageFile.size > 5 * 1024 * 1024) {
         // Large file - use presigned URL upload
-        console.log('Using presigned URL upload for large file:', imageFile.size, 'bytes');
         await photoAPI.submitPhotoWithPresignedUrl(userId, title, description, imageFile);
         setSuccess('Kuva lähetetty onnistuneesti ja käsitellään! Voit lähettää vain yhden kuvan kuukaudessa.');
       } else {
         // Small file - use traditional base64 upload
-        console.log('Using base64 upload for small file:', imageFile.size, 'bytes');
         const reader = new FileReader();
         reader.onloadend = async () => {
           try {
@@ -69,7 +67,6 @@ export const Submit: React.FC = () => {
             await photoAPI.submitPhoto(userId, title, description, imageData);
             setSuccess('Kuva lähetetty onnistuneesti! Voit lähettää vain yhden kuvan kuukaudessa.');
           } catch (err: any) {
-            console.error('Kuvan lähetys epäonnistui:', err);
             setError(err.response?.data?.error || 'Kuvan lähetys epäonnistui');
           } finally {
             setLoading(false);
@@ -89,8 +86,6 @@ export const Submit: React.FC = () => {
       const fileInput = document.getElementById('photo-file') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
     } catch (err: any) {
-      console.error('Upload error:', err);
-
       // Enhanced error message
       let errorMessage = 'Kuvan lähetys epäonnistui';
       if (err.response?.data?.error) {

@@ -122,6 +122,16 @@ export const authAPI = {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userId');
   },
+
+  forgotPassword: async (email: string): Promise<AuthResponse> => {
+    const response = await api.post('/forgot-password', { email });
+    return response.data;
+  },
+
+  resetPassword: async (email: string, code: string, password: string): Promise<AuthResponse> => {
+    const response = await api.post('/reset-password', { email, code, password });
+    return response.data;
+  },
 };
 
 export const photoAPI = {

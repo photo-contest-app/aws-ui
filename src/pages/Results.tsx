@@ -44,7 +44,7 @@ export const Results: React.FC = () => {
           <>
             <h2>{error}</h2>
             <p>
-              Eniten ääniä saanut valokuva julkaistaan kuukauden vaihteessa keskiyöllä UTC-ajassa.
+              Eniten ääniä saanut valokuva julkaistaan kuukauden vaihtuessa keskiyöllä.
             </p>
           </>
       )}

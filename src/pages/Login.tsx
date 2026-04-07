@@ -54,6 +54,9 @@ export const Login: React.FC = () => {
               placeholder="Syötä salasanasi"
             />
           </div>
+          <p className="auth-link" style={{ marginTop: '0.5rem', marginBottom: '1rem', textAlign: 'right' }}>
+            <Link to="/unohditko-salasanan">Unohditko salasanasi?</Link>
+          </p>
           <button type="submit" disabled={loading} className="btn-primary">
             {loading ? 'Kirjaudutaan...' : 'Kirjaudu sisään'}
           </button>

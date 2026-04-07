@@ -5,6 +5,8 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { ForgotPassword } from './pages/ForgotPassword';
+import { ResetPassword } from './pages/ResetPassword';
 import { Vote } from './pages/Vote';
 import { Submit } from './pages/Submit';
 import { Results } from './pages/Results';
@@ -18,6 +20,8 @@ function AppRoutes() {
     <Routes>
       <Route path="/kirjaudu" element={<Login />} />
       <Route path="/luo-tunnus" element={<Register />} />
+      <Route path="/unohditko-salasanan" element={<ForgotPassword />} />
+      <Route path="/palauta-salasana" element={<ResetPassword />} />
       <Route path="/tulokset" element={<Results />} />
       <Route path="/tietosuoja" element={<Legal />} />
       <Route
